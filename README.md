@@ -1,56 +1,56 @@
-# AGV Simuliacijos Sistema (OOP Kursinis darbas)
-
+# AGV maršruto planavimas (Kursinis darbas)
+---
 ## 1. Įžanga
-[cite_start]**Tikslas:** Sukurti automatizuoto valdomo transporto (AGV) simuliatorių, kuris demonstruotų objektinio programavimo (OOP) principus Python aplinkoje[cite: 4, 77].
+**Tikslas:** Sukurti bepiločio roboto (AGV) simuliatorių, kuris demonstruotų objektinio programavimo (OOP) principus Python kalboje.
 
-**Apie programą:** Tai interaktyvi aplikacija, skirta stebėti roboto judėjimą sandėlyje. [cite_start]Robotas reaguoja į vartotojo užsakymus, randa trumpiausią kelią (A* algoritmas) tarp kliūčių ir registruoja visus veiksmus faile.
+**Apie programą:** Tai programėlė, skirta stebėti roboto judėjimą sandėlyje. Robotas reaguoja į naudotojo užsakymus ir atitinkamai randa optimaliausią pristatymo būdą tarp kliūčių ir registruoja visus veiksmus faile.
 
 **Kaip paleisti:**
-1. Įsitikinkite, kad turite įdiegtą Python 3.x.
-2. Įsidiekite `pygame` biblioteką: `pip install pygame`.
-3. Paleiskite pagrindinį failą: `python main.py`.
+1. Įsidiekite `Python`.
+2. Įsidiekite `pygame` (`pip install pygame`). 
+3. Nukopijuokite ir paleiskite kodą: `main.py`.
 
 **Kaip naudotis:**
-* Ekrane matysite sandėlį (mėlyni kvadratai), terminalus (žali kvadratai) ir kliūtis (pilki kvadratai).
-* Apačioje esantys mygtukai "Panaudoti 1-4" leidžia iškviesti robotą į konkretų terminalą.
-* Geltonas kvadratas (AGV) automatiškai nuvažiuos į sandėlį paimti krovinio ir pristatys jį į tikslą.
+* Ekrane matysite sandėlius (mėlyni kvadratai); pristatymo vietas (žali kvadratai); kliūtis (pilki kvadratai).
+* Apačioje esantys mygtukai "Panaudoti X" ištuštins tam tinkamą terminalą.
+* Geltonas kvadratas (AGV) automatiškai nuvažiuos į sandėlį paimti krovinio ir papildyti tuščią terminalą.
 
 ---
 
-## 2. Analizė (OOP principų įgyvendinimas)
+## 2. Analizė
 
-### [cite_start]4 OOP poliai 
+### 4 OOP elementai
 
 1. **Abstrakcija:** Naudojama `MapObject(ABC)` klasė. Ji nustato bendrą struktūrą visiems žemėlapio objektams, bet pati negali būti sukurta.
-2. **Paveldėjimas:** Klasė `Station` paveldi visas savybes iš `MapObject`. Tai leidžia pakartotinai naudoti kodą pozicijai valdyti.
-3. **Enkapsuliacija:** Koordinačių kintamieji `self._x` ir `self._y` yra paslėpti (naudojant `_` prefiksą), o prieiga prie jų suteikiama tik per saugų `@property` metodą.
-4. **Polimorfizmas:** Kiekviena klasė savaip įgyvendina `draw()` metodą. Nors kviečiame tą pačią komandą, stotelė piešiama kaip kvadratas, o robotas - kaip mažesnis judantis objektas.
+2. **Paveldėjimas:** Klasė `Station` paveldi visas savybes iš `MapObject`. Tai leidžia vaikinėms klasėms paveldėti visą tėvinės klasės informaciją.
+3. **Enkapsuliacija:** Koordinačių kintamieji `self._x` ir `self._y` yra paslėpti (naudojant `_`), o prieiga prie jų suteikiama tik per saugų `@property` metodą.
+4. **Polimorfizmas:** Kiekviena klasė savaip supranta `draw()` metodą. Nors kviečiame tą pačią komandą, stotelės piešiamios kaip 1x1 dydžio kvadratai, o robotas - kaip mažas kvadračiukas.
 
-### [cite_start]Dizaino šablonas (Design Pattern) 
-Programoje įdiegtas **Singleton** šablonas (`Logger` klasė). Jis užtikrina, kad visoje sistemoje egzistuotų tik vienas žurnalo objektas, atsakingas už rašymą į `log.txt`. Tai apsaugo nuo failo konfliktų.
+### Signleton 
+Programoje įdiegtas **Singleton** pattern'as (`Logger` klasė). Jis užtikrina, kad visoje sistemoje egzistuotų tik vienas `Log` objektas, atsakingas už rašymą į `log.txt`. Tai yra kaip viena duomenų bazė, kurioje saugoma visa informacija.
 
-### [cite_start]Kompozicija 
-`AGV` klasė naudoja kompoziciją: jos konstruktoriuje sukuriamas `Navigator` objektas (`self.nav = Navigator()`). Robotas „turi“ navigaciją, bet jos nepaveldi – tai leidžia lengvai pakeisti navigacijos algoritmą neliečiant roboto logikos.
+### Kompozicija 
+`AGV` klasė naudoja kompoziciją: jos konstruktoriuje sukuriamas `Navigator` objektas (`self.nav = Navigator()`). Robotas „turi“ navigaciją, bet jos nepaveldi – tai leidžia lengvai keisti navigacijos parametrus. Bet, jei nebūtų navigacijos, AGV irgi išnyktų.
 
-### [cite_start]Darbas su failais 
+### Failai
 * **Rašymas:** `log(msg)` metodas papildo `log.txt` failą kiekvieną kartą, kai robotas gauna užduotį arba ją įvykdo.
-* **Skaitymas:** `last()` metodas nuskaito paskutinę failo eilutę ir atvaizduoja ją vartotojo sąsajoje (UI) realiu laiku.
+* **Skaitymas:** `last()` metodas nuskaito paskutinę failo eilutę ir atvaizduoja ją UI langelyje (apačioje kairėje).
 
 ---
 
 ## 3. Rezultatai ir išvados
 
-### [cite_start]Rezultatai 
-* Sukurta veikianti grafinė simuliacija su kliūčių išvengimo algoritmu.
-* Įgyvendinta užduočių eilė (`queue`), leidžianti vartotojui pateikti kelis užsakymus vienu metu.
-* **Iššūkiai:** Sudėtingiausia dalis buvo užtikrinti sklandų roboto judėjimą ir A* algoritmo integravimą su Pygame kadrų dažniu.
+### Rezultatai 
+* Sukurtas veikiantis algoritmas, kuris suras optimaliausią maršrutą nuo taško A iki taško B, net ir esant besikeičiančioms kliūtims.
+* Yra eilė (`queue`), leidžianti panaudoti kelis terminalus vienu metu. Robotas paeiliui (nuo seniausios iki naujausios) atlikinės užduotis, kol jų nebeliks ir tada grįš į bazę.
+* **Iššūkiai:** Tai buvo vienas didesnių mano programavimo projektų, teko daug ko išmokti. Optimaliausio maršruto funkcijos pats neišgalvojau, teko ją nukopijuoti. Sekantis iššūkis buvo viską grafiškai atvaizduoti. Yra ką veikti. Pamačiau, kiek laiko tenka skirti programėlių ir žaidimų kūrėjams.
 
-### Išvados [cite: 78]
-Šis projektas parodė, kaip OOP principai padeda struktūrizuoti sudėtingas sistemas. Programa pasiekė visus iškeltus tikslus: objektų valdymą, duomenų išsaugojimą ir vartotojo sąveiką.
+### Išvados
+Šis projektas parodė, kaip su OOP galima sukurti vos ne bet ką. Mano sukurta programa sugeba: valdyti objektus, saugoti duomenis ir turi UI.
 
 **Ateities perspektyvos:**
-* Galimybė valdyti kelis AGV robotus vienu metu (vengiant susidūrimų).
-* Dinaminis kliūčių pridėjimas pelytės paspaudimu.
-* Detalesnė statistika apie pristatymo laiką.
+* DAUGIAU ROBOTŲŲŲ važinėjančių vienu metu.
+* Judančios kliūtys.
+* Baterijos integravimas ir pasikrovimo stotys.
 
 
