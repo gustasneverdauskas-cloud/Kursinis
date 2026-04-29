@@ -106,8 +106,10 @@ while True:
             agv.job.act = True; log.log(f"Viskas pildoma / papildyta"); agv.job = None
         elif agv.job and any(cp == p.pos for p in ps): #paeme krovini, veza pildyt
             agv.path = agv.nav.find(cp, agv.job.pos, obs)
-        elif not agv.job and q: #jei yra dar darbu, toliau daro
-            agv.job = q.pop(0); agv.path = agv.nav.find(cp, ps[0].pos, obs)
+        elif not agv.job and q: # Laukia darbo, paima naują iš eilės
+            agv.job = q.pop(0)
+            artimiausias_ps = min(ps, key=lambda p: abs(cp[0]-p.pos[0]) + abs(cp[1]-p.pos[1]))
+            agv.path = agv.nav.find(cp, artimiausias_ps.pos, obs)
         elif not agv.job and cp != (49, 12): #nera darbo, grizta i baze
             agv.path = agv.nav.find(cp, (49, 12), obs)
 
